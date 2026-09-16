@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Accueil - Labo XSS{% endblock %}
+
+{% block content %}
+  <h1>Laboratoire pedagogique : Reflected XSS</h1>
+  <p class="lead">
+    Ce petit site sert a comprendre, visuellement et concretement, ce qui se
+    passe quand la valeur d'un parametre GET (<code>q</code>) est inseree
+    dans une page HTML <strong>sans</strong> echappement cote serveur, puis
+    ce qui change quand elle est <strong>correctement echappee</strong>.
+  </p>
+
+  <div class="card">
+    <h3>1. Testez la recherche</h3>
+    <p>
+      Allez sur <a href="{{ url_for('search') }}">/search</a>, tapez du texte
+      (normal, du HTML, ou du JavaScript) et observez deux rendus cote a
+      cote : la version <span class="badge danger">VULNERABLE</span> et la
+      version <span class="badge safe">SECURISEE</span>.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>2. Comprenez le flux</h3>
+    <p>
+      Allez sur <a href="{{ url_for('lab') }}">/lab</a> pour voir le schema
+      du trajet de la donnee (utilisateur &rarr; parametre &rarr; serveur
+      &rarr; reponse HTML &rarr; navigateur) et un schema d'attaque simple.
+    </p>
+  </div>
+
+  <div class="card note">
+    <strong>Rappel :</strong> cette application tourne uniquement en local
+    (127.0.0.1). La page "vulnerable" contient une faille XSS volontaire,
+    creee uniquement a des fins d'apprentissage. Ne jamais reproduire ce
+    genre de faille dans une application reelle, et ne jamais exposer ce
+    labo sur un reseau public.
+  </div>
+{% endblock %}

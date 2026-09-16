@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}/lab - Labo XSS{% endblock %}
+
+{% block content %}
+  <h1>/lab &mdash; Comprendre le flux de la donnee</h1>
+  <p class="lead">
+    Ce schema montre le trajet complet d'une valeur saisie par l'utilisateur
+    jusqu'a son affichage dans le navigateur.
+  </p>
+
+  <!-- 4) Flux general : User input -> q -> Server -> HTML response -> Browser -->
+  <div class="card">
+    <h3>Flux general (requete / reponse)</h3>
+    <div class="flow vertical">
+      <div class="step">User input<br><span class="note">(ce que vous tapez)</span></div>
+      <div class="arrow">&darr;</div>
+      <div class="step">q parameter<br><span class="note">/search?q=...</span></div>
+      <div class="arrow">&darr;</div>
+      <div class="step">Server<br><span class="note">app.py lit request.args['q']</span></div>
+      <div class="arrow">&darr;</div>
+      <div class="step">HTML response<br><span class="note">q insere dans le HTML</span></div>
+      <div class="arrow">&darr;</div>
+      <div class="step">Browser<br><span class="note">affiche / execute le HTML recu</span></div>
+    </div>
+    <p class="note">
+      A chaque etape, la donnee reste "la meme chaine de caracteres" &mdash;
+      c'est uniquement la maniere dont le <strong>serveur</strong> l'insere
+      dans le HTML (etape "HTML response") qui determine si le
+      <strong>navigateur</strong> va l'executer ou simplement l'afficher.
+    </p>
+  </div>
+
+  <!-- 8) Attack flow : schema d'attaque simple -->
+  <div class="card">
+    <h3>Attack flow (schema d'attaque simple)</h3>
+    <p class="note">
+      Exemple : un lien contenant un payload est partage avec une victime.
+    </p>
+    <div class="flow vertical attack-flow">
+      <div class="step attacker">Attaquant<br><span class="note">construit /search?q=&lt;script&gt;...&lt;/script&gt;</span></div>
+      <div class="arrow">&darr;</div>
+      <div class="step victim">Victime<br><span class="note">clique sur le lien</span></div>
+      <div class="arrow">&darr;</div>
+      <div class="step">Navigateur de la victime<br><span class="note">envoie GET /search?q=...</span></div>
+      <div class="arrow">&darr;</div>
+      <div class="step victim">Serveur vulnerable<br><span class="note">insere q sans echapper</span></div>
+      <div class="arrow">&darr;</div>
+      <div class="step exec">Navigateur de la victime<br><span class="note">execute le script injecte</span></div>
+    </div>
+    <p class="note">
+      Dans un vrai scenario, ce script pourrait lire des cookies, rediriger
+      la victime, ou modifier la page (defacement) &mdash; tout cela dans le
+      contexte du site vulnerable, avec les droits de la victime. Ici, notre
+      labo se contente d'un <code>alert()</code> local pour illustrer que du
+      code s'execute reellement.
+    </p>
+  </div>
+
+  <div class="card note">
+    Retournez sur <a href="{{ url_for('search') }}">/search</a> pour tester
+    ce flux vous-meme avec les exemples "Try it yourself".
+  </div>
+{% endblock %}

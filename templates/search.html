@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}/search - Labo XSS{% endblock %}
+
+{% block content %}
+  <h1>/search &mdash; Comparaison Vulnerable / Securise</h1>
+  <p class="lead">
+    Le formulaire envoie une requete <code>GET</code> vers
+    <code>/search?q=...</code>. La meme valeur <code>q</code> est ensuite
+    affichee de deux facons differentes ci-dessous.
+  </p>
+
+  <!-- 1) Formulaire de recherche -->
+  <form class="search-form" method="get" action="{{ url_for('search') }}">
+    <input type="text" name="q" placeholder="Tapez du texte, du HTML ou du JS..." value="{{ q }}">
+    <button type="submit">Search</button>
+  </form>
+
+  <!-- 5) Try it yourself : exemples pedagogiques predefinis -->
+  <div class="card">
+    <h3>Try it yourself</h3>
+    <p class="note">Cliquez sur un exemple pour voir la difference de comportement :</p>
+    <div class="examples">
+      <a href="{{ url_for('search', q='Bonjour tout le monde') }}">Texte normal</a>
+      <a href="{{ url_for('search', q='<b>Texte en gras</b>') }}">HTML interpretable (&lt;b&gt;)</a>
+      <a href="{{ url_for('search', q='<script>alert(\'XSS Lab local\')</script>') }}">JavaScript interpretable (&lt;script&gt;)</a>
+    </div>
+  </div>
+
+  {% if has_query %}
+
+    <div class="card">
+      <div class="label">Valeur brute recue dans le parametre q</div>
+      <pre class="code">{{ q }}</pre>
+    </div>
+
+    <!-- 2) et 3) Rendus cote a cote -->
+    <div class="grid-2">
+
+      <div class="panel vulnerable">
+        <div class="panel-header">VULNERABLE &mdash; User input is inserted into HTML without escaping</div>
+        <div class="panel-body">
+          <div class="label">Rendu dans la page (peut s'executer)</div>
+          <div class="result-box">
+            {{ vulnerable_snippet|safe }}
+          </div>
+          <div class="label">Code source HTML genere</div>
+          <pre class="code">{{ vulnerable_snippet }}</pre>
+        </div>
+      </div>
+
+      <div class="panel secure">
+        <div class="panel-header">SECURE &mdash; User input is escaped</div>
+        <div class="panel-body">
+          <div class="label">Rendu dans la page (toujours du texte)</div>
+          <div class="result-box">
+            {{ secure_snippet|safe }}
+          </div>
+          <div class="label">Code source HTML genere</div>
+          <pre class="code">{{ secure_snippet|e }}</pre>
+        </div>
+      </div>
+
+    </div>
+
+    {% if 'script' in q.lower() or '<' in q %}
+      <div class="card" style="border-color:#5a2020;">
+        <h3 style="color:var(--danger);">Constat</h3>
+        <p>
+          Dans le panneau <strong>VULNERABLE</strong>, le navigateur a interprete
+          votre balise comme du vrai HTML/JavaScript. Dans le panneau
+          <strong>SECURE</strong>, la meme balise est restee du texte inerte
+          (vous voyez <code>&amp;lt;</code> / <code>&amp;gt;</code> dans le
+          code source au lieu de <code>&lt;</code> / <code>&gt;</code>).
+        </p>
+      </div>
+    {% endif %}
+
+  {% endif %}
+
+  <!-- 6) What happened? -->
+  <h2>What happened?</h2>
+  <div class="card">
+    <ul class="checklist">
+      <li><strong>Ou entre la donnee utilisateur ?</strong> Dans l'URL, via le parametre GET <code>q</code> (ex: <code>/search?q=...</code>). N'importe qui peut fabriquer cette URL, meme sans passer par le formulaire.</li>
+      <li><strong>Ou est-elle inseree ?</strong> Cote serveur, directement dans une chaine de caracteres HTML qui est ensuite renvoyee au navigateur (<code>f"&lt;p&gt;Resultats pour : {q}&lt;/p&gt;"</code>).</li>
+      <li><strong>Pourquoi l'absence d'echappement est dangereuse ?</strong> Le navigateur ne fait pas la difference entre "du HTML voulu par le developpeur" et "du HTML injecte par l'utilisateur". Si <code>q</code> contient des balises, elles deviennent une partie normale de la page.</li>
+      <li><strong>Pourquoi le navigateur interprete certains contenus ?</strong> Un navigateur analyse (parse) le flux HTML recu et transforme chaque balise reconnue (<code>&lt;script&gt;</code>, <code>&lt;img&gt;</code>, <code>&lt;svg&gt;</code>...) en element actif de la page. Il ne sait pas "d'ou vient" chaque morceau de HTML, il execute ce qu'il recoit.</li>
+    </ul>
+  </div>
+
+  <!-- 7) How to fix? -->
+  <h2>How to fix?</h2>
+  <div class="grid-2">
+    <div class="panel vulnerable">
+      <div class="panel-header">Insertion directe (dangereux)</div>
+      <div class="panel-body">
+        <pre class="code">{{ vuln_code }}</pre>
+      </div>
+    </div>
+    <div class="panel secure">
+      <div class="panel-header">Insertion apres echappement HTML (sur)</div>
+      <div class="panel-body">
+        <pre class="code">{{ secure_code }}</pre>
+      </div>
+    </div>
+  </div>
+  <div class="card note">
+    L'echappement remplace les caracteres speciaux HTML par leurs entites
+    (<code>&amp;lt;</code>, <code>&amp;gt;</code>, <code>&amp;quot;</code>,
+    <code>&amp;#39;</code>, <code>&amp;amp;</code>) avant de les inserer dans
+    la page. Le navigateur affiche alors ces entites comme du texte normal,
+    au lieu de les interpreter comme des balises. C'est exactement ce que
+    fait Flask/Jinja2 par defaut avec la syntaxe <code>&#123;&#123; variable &#125;&#125;</code>,
+    et ce que fait explicitement <code>markupsafe.escape()</code>.
+  </div>
+
+  <p class="note">Voir aussi la page <a href="{{ url_for('lab') }}">/lab</a> pour le schema complet du flux et le schema d'attaque.</p>
+
+{% endblock %}

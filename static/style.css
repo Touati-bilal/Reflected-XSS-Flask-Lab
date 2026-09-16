@@ -1,0 +1,246 @@
+/* ============================================================
+   Styles du laboratoire XSS pedagogique
+   ============================================================ */
+
+:root {
+  --bg: #0f1117;
+  --panel: #171a23;
+  --panel-2: #1e2230;
+  --border: #2a2f3f;
+  --text: #e6e8ef;
+  --muted: #9aa1b5;
+  --danger: #ff5c5c;
+  --danger-bg: #2a1416;
+  --safe: #3ddc84;
+  --safe-bg: #10241a;
+  --accent: #6ea8fe;
+  --code-bg: #10121a;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+header.topbar {
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+header.topbar .brand {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+header.topbar nav a {
+  color: var(--accent);
+  text-decoration: none;
+  margin-left: 18px;
+  font-size: 0.95rem;
+}
+header.topbar nav a:hover { text-decoration: underline; }
+
+.banner {
+  background: #3a2a05;
+  color: #ffd479;
+  border-bottom: 1px solid #5a4310;
+  padding: 8px 24px;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+main {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 28px 20px 60px;
+}
+
+h1 { font-size: 1.6rem; margin-top: 0; }
+h2 { font-size: 1.25rem; margin-top: 2.2rem; border-top: 1px solid var(--border); padding-top: 1.5rem; }
+h3 { font-size: 1.05rem; color: var(--accent); }
+
+p.lead { color: var(--muted); }
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin-bottom: 18px;
+}
+
+form.search-form {
+  display: flex;
+  gap: 8px;
+  margin: 10px 0 6px;
+}
+
+form.search-form input[type="text"] {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--panel-2);
+  color: var(--text);
+  font-size: 1rem;
+}
+
+form.search-form button {
+  padding: 10px 18px;
+  border-radius: 6px;
+  border: none;
+  background: var(--accent);
+  color: #0b0d13;
+  font-weight: 600;
+  cursor: pointer;
+}
+form.search-form button:hover { opacity: 0.9; }
+
+.examples {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.examples a {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--panel-2);
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+.examples a:hover { border-color: var(--accent); color: var(--accent); }
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 780px) {
+  .grid-2 { grid-template-columns: 1fr; }
+}
+
+.panel {
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.panel-header {
+  padding: 10px 14px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+}
+
+.panel.vulnerable .panel-header {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border-bottom: 1px solid #5a2020;
+}
+.panel.secure .panel-header {
+  background: var(--safe-bg);
+  color: var(--safe);
+  border-bottom: 1px solid #17442c;
+}
+
+.panel-body {
+  padding: 14px;
+  background: var(--panel-2);
+}
+
+.result-box {
+  min-height: 46px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: var(--code-bg);
+  border: 1px dashed var(--border);
+  margin-bottom: 10px;
+  word-break: break-word;
+}
+
+pre.code {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  overflow-x: auto;
+  font-size: 0.85rem;
+  margin: 6px 0 0;
+  color: #c7d1f0;
+}
+
+.label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.flow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 18px 0;
+}
+
+.flow .step {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  text-align: center;
+  min-width: 120px;
+  font-size: 0.9rem;
+}
+
+.flow .arrow {
+  color: var(--accent);
+  font-size: 1.4rem;
+  padding: 0 10px;
+}
+
+.flow.vertical {
+  flex-direction: column;
+  align-items: center;
+}
+.flow.vertical .arrow { padding: 4px 0; }
+
+.attack-flow .step.attacker { border-color: var(--danger); color: var(--danger); }
+.attack-flow .step.victim { border-color: var(--accent); }
+.attack-flow .step.exec { border-color: var(--danger); background: var(--danger-bg); color: var(--danger); }
+
+.note {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  vertical-align: middle;
+}
+.badge.danger { background: var(--danger-bg); color: var(--danger); }
+.badge.safe { background: var(--safe-bg); color: var(--safe); }
+
+ul.checklist li { margin-bottom: 6px; }

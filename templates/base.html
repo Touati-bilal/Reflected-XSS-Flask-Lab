@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Labo XSS{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <!-- Bandeau de rappel : labo local, usage pedagogique uniquement -->
+  <div class="banner">
+    LOCALHOST ONLY &middot; Laboratoire pedagogique &middot; Aucune donnee reelle, aucune cible externe
+  </div>
+
+  <header class="topbar">
+    <div class="brand">XSS Lab &mdash; Reflected XSS</div>
+    <nav>
+      <a href="{{ url_for('index') }}">Accueil</a>
+      <a href="{{ url_for('search') }}">/search</a>
+      <a href="{{ url_for('lab') }}">/lab</a>
+    </nav>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+</body>
+</html>
